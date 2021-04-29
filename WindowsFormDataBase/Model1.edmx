@@ -1,0 +1,196 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="PeopleDatabaseModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Badges">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="opschrijft" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="People">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="voornaam" Type="nvarchar" MaxLength="50" />
+          <Property Name="achternaam" Type="nvarchar" MaxLength="50" />
+          <Property Name="leeftijd" Type="int" />
+        </EntityType>
+        <EntityType Name="Persons_badges">
+          <Key>
+            <PropertyRef Name="people_id" />
+            <PropertyRef Name="badge_id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="people_id" Type="int" Nullable="false" />
+          <Property Name="badge_id" Type="int" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Persons_badges_Badges">
+          <End Role="Badges" Type="Self.Badges" Multiplicity="1" />
+          <End Role="Persons_badges" Type="Self.Persons_badges" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Badges">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Persons_badges">
+              <PropertyRef Name="badge_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Persons_badges_People">
+          <End Role="People" Type="Self.People" Multiplicity="1" />
+          <End Role="Persons_badges" Type="Self.Persons_badges" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="People">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Persons_badges">
+              <PropertyRef Name="people_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="PeopleDatabaseModelStoreContainer">
+          <EntitySet Name="Badges" EntityType="Self.Badges" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="People" EntityType="Self.People" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Persons_badges" EntityType="Self.Persons_badges" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_Persons_badges_Badges" Association="Self.FK_Persons_badges_Badges">
+            <End Role="Badges" EntitySet="Badges" />
+            <End Role="Persons_badges" EntitySet="Persons_badges" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Persons_badges_People" Association="Self.FK_Persons_badges_People">
+            <End Role="People" EntitySet="People" />
+            <End Role="Persons_badges" EntitySet="Persons_badges" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="PeopleDatabaseModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Person">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="voornaam" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="achternaam" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="leeftijd" Type="Int32" />
+          <NavigationProperty Name="Persons_badges" Relationship="PeopleDatabaseModel.FK_Persons_badges_People" FromRole="Person" ToRole="Persons_badges" />
+        </EntityType>
+        <EntityContainer Name="PeopleDatabaseEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="People" EntityType="Self.Person" />
+          <EntitySet Name="Badges" EntityType="PeopleDatabaseModel.Badge" />
+          <EntitySet Name="Persons_badges" EntityType="PeopleDatabaseModel.Persons_badges" />
+          <AssociationSet Name="FK_Persons_badges_Badges" Association="PeopleDatabaseModel.FK_Persons_badges_Badges">
+            <End Role="Badge" EntitySet="Badges" />
+            <End Role="Persons_badges" EntitySet="Persons_badges" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Persons_badges_People" Association="PeopleDatabaseModel.FK_Persons_badges_People">
+            <End Role="Person" EntitySet="People" />
+            <End Role="Persons_badges" EntitySet="Persons_badges" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="Badge">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="opschrijft" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Persons_badges" Relationship="PeopleDatabaseModel.FK_Persons_badges_Badges" FromRole="Badge" ToRole="Persons_badges" />
+        </EntityType>
+        <EntityType Name="Persons_badges">
+          <Key>
+            <PropertyRef Name="people_id" />
+            <PropertyRef Name="badge_id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="people_id" Type="Int32" Nullable="false" />
+          <Property Name="badge_id" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Badge" Relationship="PeopleDatabaseModel.FK_Persons_badges_Badges" FromRole="Persons_badges" ToRole="Badge" />
+          <NavigationProperty Name="Person" Relationship="PeopleDatabaseModel.FK_Persons_badges_People" FromRole="Persons_badges" ToRole="Person" />
+        </EntityType>
+        <Association Name="FK_Persons_badges_Badges">
+          <End Type="PeopleDatabaseModel.Badge" Role="Badge" Multiplicity="1" />
+          <End Type="PeopleDatabaseModel.Persons_badges" Role="Persons_badges" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Badge">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Persons_badges">
+              <PropertyRef Name="badge_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Persons_badges_People">
+          <End Type="PeopleDatabaseModel.Person" Role="Person" Multiplicity="1" />
+          <End Type="PeopleDatabaseModel.Persons_badges" Role="Persons_badges" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Person">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Persons_badges">
+              <PropertyRef Name="people_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="PeopleDatabaseModelStoreContainer" CdmEntityContainer="PeopleDatabaseEntities">
+          <EntitySetMapping Name="People">
+            <EntityTypeMapping TypeName="PeopleDatabaseModel.Person">
+              <MappingFragment StoreEntitySet="People">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="voornaam" ColumnName="voornaam" />
+                <ScalarProperty Name="achternaam" ColumnName="achternaam" />
+                <ScalarProperty Name="leeftijd" ColumnName="leeftijd" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Badges">
+            <EntityTypeMapping TypeName="PeopleDatabaseModel.Badge">
+              <MappingFragment StoreEntitySet="Badges">
+                <ScalarProperty Name="opschrijft" ColumnName="opschrijft" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Persons_badges">
+            <EntityTypeMapping TypeName="PeopleDatabaseModel.Persons_badges">
+              <MappingFragment StoreEntitySet="Persons_badges">
+                <ScalarProperty Name="badge_id" ColumnName="badge_id" />
+                <ScalarProperty Name="people_id" ColumnName="people_id" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
